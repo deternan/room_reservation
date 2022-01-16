@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會議室預約系統</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'reservation/bootstrap/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'reservation/fullcalendar/main.min.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <dev class="col my-5">
+                <div id="calendar"></div>
+                <div style="display: none" id="jsonData" data-json="{{ reservation }}"></div>
+            </dev>
+        </div>
+
+    </div>
+    <script src="{% static 'reservation/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'reservation/fullcalendar/main.min.js' %}"></script>
+    <script src="{% static 'reservation/index.js' %}"></script>
+</body>
+
+</html>

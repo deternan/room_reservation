@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會議室預約系統</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'reservation/bootstrap/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'reservation/custom.css' %}">
+</head>
+
+<body>
+    <main class="form-signin text-center mt-5">
+        <form id="loginForm" method="post">
+            <h1 class="h3 mb-3 fw-normal">請登入</h1>
+            <div class="form-floating mb-3">
+                <input type="text" name="id" class="form-control" id="userID" placeholder="請輸入您的工號">
+                <label for="userID">工號</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" name="password" class="form-control" id="password" placeholder="請輸入您的密碼">
+                <label for="password">密碼</label>
+            </div>
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="remember"> 記住我
+                </label>
+            </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">登入</button>
+            <p class="mt-5 mb-3 text-muted">© 2022</p>
+        </form>
+    </main>
+    <script src="{% static 'reservation/bootstrap/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+</html>
