@@ -2,8 +2,10 @@
 
 ## How to start web application?
 ```
-$ python manage.py runserver
+// Build DB
+$ python manage.py migrate
 // Open http://127.0.0.1:8000/reservation
+$ python manage.py runserver
 ```
 
 ## Pre Requirement
@@ -16,3 +18,5 @@ $ python manage.py runserver
 ## Web Packages
 * Bootstrap 5
 * FullCalendar
+
+## How to 
