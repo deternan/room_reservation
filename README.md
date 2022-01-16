@@ -1,6 +1,6 @@
 # room_reservation
 
-## How to start web application?
+## Start web application
 ```
 // Build DB
 $ python manage.py migrate
@@ -19,4 +19,5 @@ $ python manage.py runserver
 * Bootstrap 5
 * FullCalendar
 
-## How to 
+## Build backend admin user
+`$ python manage.py createsuperuser`
