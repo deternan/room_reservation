@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     var reservationList = JSON.parse(document.getElementById('jsonData').getAttribute('data-json'))
-
+    // Convert reservation DB data to json object
     events = []
     reservationList.forEach(elem => {
         events.push({
@@ -9,7 +9,51 @@ document.addEventListener('DOMContentLoaded', function () {
             end: elem.end
         })
     });
+    console.log('events', events);
+    // Initialize Modal
     var eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
+    // Initialize datetimepicker
+    var startDTP = new tempusDominus.TempusDominus(document.getElementById('startDatetimepicker'), {
+        display: {
+            icons: {
+                time: 'bi bi-clock',
+                date: 'bi bi-calendar',
+                up: 'bi bi-arrow-up',
+                down: 'bi bi-arrow-down',
+                previous: 'bi bi-chevron-left',
+                next: 'bi bi-chevron-right',
+                today: 'bi bi-calendar-check',
+                clear: 'bi bi-trash',
+                close: 'bi bi-x',
+            },
+            buttons: {
+                today: true,
+                clear: true,
+                close: true,
+            },
+        }
+    });
+    var endDTP = new tempusDominus.TempusDominus(document.getElementById('endDatetimepicker'), {
+        display: {
+            icons: {
+                time: 'bi bi-clock',
+                date: 'bi bi-calendar',
+                up: 'bi bi-arrow-up',
+                down: 'bi bi-arrow-down',
+                previous: 'bi bi-chevron-left',
+                next: 'bi bi-chevron-right',
+                today: 'bi bi-calendar-check',
+                clear: 'bi bi-trash',
+                close: 'bi bi-x',
+            },
+            buttons: {
+                today: true,
+                clear: true,
+                close: true,
+            },
+        }
+    });
+    // Initialize FullCalendar
     var calendarElem = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarElem, {
         initialView: 'dayGridMonth',
@@ -47,21 +91,49 @@ document.addEventListener('DOMContentLoaded', function () {
         select: function (info) {
             document.getElementById('name').value = 'IDD - 王曉明(21011234)';
             document.getElementById('room').value = '第四研究室';
-            document.getElementById('start-time').value = info.startStr;
-            document.getElementById('end-time').value = info.endStr;
+            document.getElementById('purpose').value = '';
+            var startTime = new Date(info.startStr);
+            var endTime = new Date(info.endStr);
+            startDTP.updateOptions({
+                viewDate: startTime,
+            }, false);
+            endDTP.updateOptions({
+                viewDate: endTime,
+            }, false);
+            document.getElementById('start-time').value = startTime.toLocaleString();
+            document.getElementById('end-time').value = endTime.toLocaleString();
             eventModal.show();
         },
     });
-
+    // Define button click events
     var btnAdd = document.getElementById('btnAdd');
     btnAdd.addEventListener('click', function () {
+        console.log(`start: ${toIsoString(startDTP.viewDate)}`);
+        console.log(`end: ${toIsoString(endDTP.viewDate)}`);
         calendar.addEvent({
-            title: '開會',
-            start: document.getElementById('start-time').value,
-            end: document.getElementById('end-time').value,
+            title: document.getElementById('purpose').value,
+            start: toIsoString(startDTP.viewDate),
+            end: toIsoString(endDTP.viewDate),
         });
         eventModal.hide();
     });
-
     calendar.render();
 });
+
+function toIsoString(date) {
+    var tzo = -date.getTimezoneOffset(),
+        dif = tzo >= 0 ? '+' : '-',
+        pad = function (num) {
+            var norm = Math.floor(Math.abs(num));
+            return (norm < 10 ? '0' : '') + norm;
+        };
+
+    return date.getFullYear() +
+        '-' + pad(date.getMonth() + 1) +
+        '-' + pad(date.getDate()) +
+        'T' + pad(date.getHours()) +
+        ':' + pad(date.getMinutes()) +
+        ':' + pad(date.getSeconds()) +
+        dif + pad(tzo / 60) +
+        ':' + pad(tzo % 60);
+}
