@@ -1,9 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
+    var countId = 0;
     var reservationList = JSON.parse(document.getElementById('jsonData').getAttribute('data-json'))
     // Convert reservation DB data to json object
     events = []
     reservationList.forEach(elem => {
         events.push({
+            id: 'db',
             title: `${elem['department']} - ${elem['name']} (${elem['owner_id']})`,
             start: elem.start,
             end: elem.end
@@ -12,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('events', events);
     // Initialize Modal
     var eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
+    var editModal = new bootstrap.Modal(document.getElementById('editModal'));
     // Initialize datetimepicker
     var startDTP = new tempusDominus.TempusDominus(document.getElementById('startDatetimepicker'), {
         display: {
@@ -34,6 +37,46 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     var endDTP = new tempusDominus.TempusDominus(document.getElementById('endDatetimepicker'), {
+        display: {
+            icons: {
+                time: 'bi bi-clock',
+                date: 'bi bi-calendar',
+                up: 'bi bi-arrow-up',
+                down: 'bi bi-arrow-down',
+                previous: 'bi bi-chevron-left',
+                next: 'bi bi-chevron-right',
+                today: 'bi bi-calendar-check',
+                clear: 'bi bi-trash',
+                close: 'bi bi-x',
+            },
+            buttons: {
+                today: true,
+                clear: true,
+                close: true,
+            },
+        }
+    });
+    var editStartDTP = new tempusDominus.TempusDominus(document.getElementById('edit-startDatetimepicker'), {
+        display: {
+            icons: {
+                time: 'bi bi-clock',
+                date: 'bi bi-calendar',
+                up: 'bi bi-arrow-up',
+                down: 'bi bi-arrow-down',
+                previous: 'bi bi-chevron-left',
+                next: 'bi bi-chevron-right',
+                today: 'bi bi-calendar-check',
+                clear: 'bi bi-trash',
+                close: 'bi bi-x',
+            },
+            buttons: {
+                today: true,
+                clear: true,
+                close: true,
+            },
+        }
+    });
+    var editEndDTP = new tempusDominus.TempusDominus(document.getElementById('edit-endDatetimepicker'), {
         display: {
             icons: {
                 time: 'bi bi-clock',
@@ -81,7 +124,57 @@ document.addEventListener('DOMContentLoaded', function () {
         events: events,
         eventClick: function (info) {
             var eventObj = info.event;
-            alert('Title: ' + eventObj.title);
+            document.getElementById('eventId').value = eventObj.id;
+            document.getElementById('edit-name').value = 'IDD - 王曉明(21011234)';
+            document.getElementById('edit-room').value = '第四研究室';
+            document.getElementById('edit-purpose').value = eventObj.title;
+            var startTime = new Date(eventObj.startStr);
+            var endTime = new Date(eventObj.endStr);
+            editStartDTP.updateOptions({
+                viewDate: startTime,
+                display: {
+                    icons: {
+                        time: 'bi bi-clock',
+                        date: 'bi bi-calendar',
+                        up: 'bi bi-arrow-up',
+                        down: 'bi bi-arrow-down',
+                        previous: 'bi bi-chevron-left',
+                        next: 'bi bi-chevron-right',
+                        today: 'bi bi-calendar-check',
+                        clear: 'bi bi-trash',
+                        close: 'bi bi-x',
+                    },
+                    buttons: {
+                        today: true,
+                        clear: true,
+                        close: true,
+                    },
+                }
+            }, true);
+            editEndDTP.updateOptions({
+                viewDate: endTime,
+                display: {
+                    icons: {
+                        time: 'bi bi-clock',
+                        date: 'bi bi-calendar',
+                        up: 'bi bi-arrow-up',
+                        down: 'bi bi-arrow-down',
+                        previous: 'bi bi-chevron-left',
+                        next: 'bi bi-chevron-right',
+                        today: 'bi bi-calendar-check',
+                        clear: 'bi bi-trash',
+                        close: 'bi bi-x',
+                    },
+                    buttons: {
+                        today: true,
+                        clear: true,
+                        close: true,
+                    },
+                }
+            }, true);
+            document.getElementById('edit-start-time').value = startTime.toLocaleString();
+            document.getElementById('edit-end-time').value = endTime.toLocaleString();
+            editModal.show();
         },
         businessHours: {
             daysOfWeek: [1, 2, 3, 4, 5], // Monday - Friday
@@ -96,26 +189,82 @@ document.addEventListener('DOMContentLoaded', function () {
             var endTime = new Date(info.endStr);
             startDTP.updateOptions({
                 viewDate: startTime,
-            }, false);
+                display: {
+                    icons: {
+                        time: 'bi bi-clock',
+                        date: 'bi bi-calendar',
+                        up: 'bi bi-arrow-up',
+                        down: 'bi bi-arrow-down',
+                        previous: 'bi bi-chevron-left',
+                        next: 'bi bi-chevron-right',
+                        today: 'bi bi-calendar-check',
+                        clear: 'bi bi-trash',
+                        close: 'bi bi-x',
+                    },
+                    buttons: {
+                        today: true,
+                        clear: true,
+                        close: true,
+                    },
+                }
+            }, true);
             endDTP.updateOptions({
                 viewDate: endTime,
-            }, false);
+                display: {
+                    icons: {
+                        time: 'bi bi-clock',
+                        date: 'bi bi-calendar',
+                        up: 'bi bi-arrow-up',
+                        down: 'bi bi-arrow-down',
+                        previous: 'bi bi-chevron-left',
+                        next: 'bi bi-chevron-right',
+                        today: 'bi bi-calendar-check',
+                        clear: 'bi bi-trash',
+                        close: 'bi bi-x',
+                    },
+                    buttons: {
+                        today: true,
+                        clear: true,
+                        close: true,
+                    },
+                }
+            }, true);
             document.getElementById('start-time').value = startTime.toLocaleString();
             document.getElementById('end-time').value = endTime.toLocaleString();
             eventModal.show();
         },
     });
     // Define button click events
+    // Add event
     var btnAdd = document.getElementById('btnAdd');
     btnAdd.addEventListener('click', function () {
         console.log(`start: ${toIsoString(startDTP.viewDate)}`);
         console.log(`end: ${toIsoString(endDTP.viewDate)}`);
         calendar.addEvent({
+            id: countId.toString(),
             title: document.getElementById('purpose').value,
             start: toIsoString(startDTP.viewDate),
             end: toIsoString(endDTP.viewDate),
         });
+        countId++;
         eventModal.hide();
+    });
+    // Update event
+    var btnUpdate = document.getElementById('btnUpdate');
+    btnUpdate.addEventListener('click', function () {
+        var eventId = document.getElementById('eventId').value;
+        var eventObj = calendar.getEventById(eventId);
+        eventObj.setProp('title', document.getElementById('purpose').value);
+        eventObj.setDates(toIsoString(editStartDTP.viewDate), toIsoString(editEndDTP.viewDate));
+        editModal.hide();
+    });
+    // Delete event
+    var btnDelete = document.getElementById('btnDelete');
+    btnDelete.addEventListener('click', function () {
+        var eventId = document.getElementById('eventId').value;
+        var eventObj = calendar.getEventById(eventId);
+        eventObj.remove();
+        editModal.hide();
     });
     calendar.render();
 });
