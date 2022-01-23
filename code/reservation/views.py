@@ -15,16 +15,15 @@ def index(request):
 
 def room(request, room_id):
     try:
-        reservation_list = list(Reservation.objects.get(room_id=room_id).order_by('begin_time')[:])
+        reservation_list = Reservation.objects.filter(room_id=room_id)
     except Reservation.DoesNotExist:
         reservation_list = []
-
+    print(reservation_list)
     room_info = Room.objects.get(pk=room_id)
     context = dict()
     data = [
         {
             'id': elem.id,
-            'room_id': elem.room_id,
             'owner_id': elem.owner_id,
             'name': elem.owner_name,
             'department': elem.owner_department,
@@ -33,6 +32,7 @@ def room(request, room_id):
         }
         for elem in reservation_list
     ]
+    print(data)
     context['reservation'] = json.dumps(data)
     context['room'] = room_info
 
