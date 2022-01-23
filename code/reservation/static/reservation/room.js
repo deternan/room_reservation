@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     events = []
     reservationList.forEach(elem => {
         events.push({
-            id: 'db',
+            id: elem['id'],
             title: `${elem['department']} - ${elem['name']} (${elem['owner_id']})`,
             start: elem.start,
             end: elem.end
