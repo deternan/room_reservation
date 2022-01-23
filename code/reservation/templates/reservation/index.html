@@ -9,130 +9,43 @@
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'reservation/bootstrap/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'reservation/bootstrap-icon/bootstrap-icons.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'reservation/tempus-dominus/tempus-dominus.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'reservation/fullcalendar/main.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'reservation/custom.css' %}">
 </head>
 
 <body>
     <div class="container">
-        <div class="row">
-            <dev class="col my-5">
-                <div id="calendar"></div>
-                <div style="display: none" id="jsonData" data-json="{{ reservation }}"></div>
-            </dev>
-        </div>
-        <div class="modal fade" id="eventModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="eventModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="eventModalLabel">預約資訊</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="mb-3 input-group">
-                                <label for="name" class="input-group-text">預約者</label>
-                                <input type="text" class="form-control" id="name" readonly>
-                            </div>
-                            <div class="mb-3 input-group">
-                                <label for="room" class="input-group-text">會議室</label>
-                                <input type="text" class="form-control" id="room" readonly>
-                            </div>
-                            <div class="mb-3 input-group">
-                                <label for="purpose" class="input-group-text">用途</label>
-                                <input type="text" class="form-control" id="purpose">
-                            </div>
-                            <div class="mb-3 input-group" id='startDatetimepicker' data-td-target-input='nearest'
-                                data-td-target-toggle='nearest'>
-                                <label class="input-group-text" for="start-time">開始時間</label>
-                                <input id='start-time' type='text' class='form-control'
-                                    data-td-target='#startDatetimepicker' />
-                                <span class='input-group-text' data-td-target='#startDatetimepicker'
-                                    data-td-toggle='datetimepicker'>
-                                    <i class="bi-calendar" style="font-size: 1rem; color: rgb(0, 0, 0);"></i>
-                                </span>
-                            </div>
-                            <div class="mb-3 input-group" id='endDatetimepicker' data-td-target-input='nearest'
-                                data-td-target-toggle='nearest'>
-                                <label for="end-time" class="input-group-text">結束時間</label>
-                                <input id='end-time' type='text' class='form-control'
-                                    data-td-target='#endDatetimepicker' />
-                                <span class='input-group-text' data-td-target='#endDatetimepicker'
-                                    data-td-toggle='datetimepicker'>
-                                    <i class="bi-calendar" style="font-size: 1rem; color: rgb(0, 0, 0);"></i>
-                                </span>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                        <button type="button" id="btnAdd" class="btn btn-primary">確定</button>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#"><i class="bi-calendar-event"
+                        style="font-size: 1.25rem; color: rgb(255, 255, 255);"></i> 會議室預約系統</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a class="nav-link" aria-current="page" href="{% url 'reservation:index' %}">會議室清單</a>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="editModal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">預約資訊</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <input type="hidden" id="eventId" value="">
-                            <div class="mb-3 input-group">
-                                <label for="edit-name" class="input-group-text">預約者</label>
-                                <input type="text" class="form-control" id="edit-name" readonly>
-                            </div>
-                            <div class="mb-3 input-group">
-                                <label for="edit-room" class="input-group-text">會議室</label>
-                                <input type="text" class="form-control" id="edit-room" readonly>
-                            </div>
-                            <div class="mb-3 input-group">
-                                <label for="edit-purpose" class="input-group-text">用途</label>
-                                <input type="text" class="form-control" id="edit-purpose">
-                            </div>
-                            <div class="mb-3 input-group" id='edit-startDatetimepicker' data-td-target-input='nearest'
-                                data-td-target-toggle='nearest'>
-                                <label class="input-group-text" for="start-time">開始時間</label>
-                                <input id='edit-start-time' type='text' class='form-control'
-                                    data-td-target='#edit-startDatetimepicker' />
-                                <span class='input-group-text' data-td-target='#edit-sstartDatetimepicker'
-                                    data-td-toggle='datetimepicker'>
-                                    <i class="bi-calendar" style="font-size: 1rem; color: rgb(0, 0, 0);"></i>
-                                </span>
-                            </div>
-                            <div class="mb-3 input-group" id='edit-endDatetimepicker' data-td-target-input='nearest'
-                                data-td-target-toggle='nearest'>
-                                <label for="end-time" class="input-group-text">結束時間</label>
-                                <input id='edit-end-time' type='text' class='form-control'
-                                    data-td-target='#edit-endDatetimepicker' />
-                                <span class='input-group-text' data-td-target='#edit-endDatetimepicker'
-                                    data-td-toggle='datetimepicker'>
-                                    <i class="bi-calendar" style="font-size: 1rem; color: rgb(0, 0, 0);"></i>
-                                </span>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                        <button type="button" id="btnDelete" class="btn btn-danger"><i class="bi-trash"
-                                style="font-size: 1rem; color: rgb(255, 255, 255);"></i> 刪除</button>
-                        <button type="button" id="btnUpdate" class="btn btn-primary"><i class="bi-check"
-                                style="font-size: 1rem; color: rgb(255, 255, 255);"></i> 更新</button>
-                    </div>
+        </nav>
+        <div class="row text-center">
+            <div class="col my-5">
+                {% if room_list %}
+                <div class="col list-group">
+                    {% for room in room_list %}
+                    <a href="{% url 'reservation:room' room.id %}"
+                        class="list-group-item list-group-item-action">{{ room.room_name }}</a>
+                    {% endfor %}
                 </div>
+                {% else %}
+                <h2>沒有可借的會議室</h2>
+                {% endif %}
             </div>
         </div>
     </div>
-    <script src="{% static 'reservation/popper/popper.min.js' %}"></script>
-    <script src="{% static 'reservation/bootstrap/bootstrap.min.js' %}"></script>
-    <script src="{% static 'reservation/fullcalendar/main.min.js' %}"></script>
-    <script src="{% static 'reservation/tempus-dominus/tempus-dominus.js' %}"></script>
-    <script src="{% static 'reservation/index.js' %}"></script>
+    <script src="{% static 'reservation/bootstrap/bootstrap.bundle.min.js' %}"></script>
 </body>
 
 </html>
