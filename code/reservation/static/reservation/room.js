@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     var countId = 0;
+    var roomName = document.getElementById('roomData').getAttribute('data-json');
     var reservationList = JSON.parse(document.getElementById('jsonData').getAttribute('data-json'))
     // Convert reservation DB data to json object
     events = []
@@ -126,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var eventObj = info.event;
             document.getElementById('eventId').value = eventObj.id;
             document.getElementById('edit-name').value = 'IDD - 王曉明(21011234)';
-            document.getElementById('edit-room').value = '第四研究室';
+            document.getElementById('edit-room').value = roomName;
             document.getElementById('edit-purpose').value = eventObj.title;
             var startTime = new Date(eventObj.startStr);
             var endTime = new Date(eventObj.endStr);
@@ -183,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         select: function (info) {
             document.getElementById('name').value = 'IDD - 王曉明(21011234)';
-            document.getElementById('room').value = '第四研究室';
+            document.getElementById('room').value = roomName;
             document.getElementById('purpose').value = '';
             var startTime = new Date(info.startStr);
             var endTime = new Date(info.endStr);
