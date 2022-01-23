@@ -51,11 +51,7 @@
                                 <span class='input-group-text' data-td-target='#startDatetimepicker'
                                     data-td-toggle='datetimepicker'>
                                     <i class="bi-calendar" style="font-size: 1rem; color: rgb(0, 0, 0);"></i>
-                                    <!-- <img src="{% static 'reservation/bootstrap-icon/calendar.svg' %}" alt="Calendar"
-                                        width="32" height="32"> -->
                                 </span>
-                                <!-- <label for="start-time" class="col-form-label">開始時間</label>
-                                <input type="text" class="form-control" id="start-time"> -->
                             </div>
                             <div class="mb-3 input-group" id='endDatetimepicker' data-td-target-input='nearest'
                                 data-td-target-toggle='nearest'>
@@ -66,14 +62,67 @@
                                     data-td-toggle='datetimepicker'>
                                     <i class="bi-calendar" style="font-size: 1rem; color: rgb(0, 0, 0);"></i>
                                 </span>
-                                <!-- <label for="end-time" class="col-form-label">結束時間</label>
-                                <input type="text" class="form-control" id="end-time"> -->
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
                         <button type="button" id="btnAdd" class="btn btn-primary">確定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="editModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">預約資訊</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <input type="hidden" id="eventId" value="">
+                            <div class="mb-3 input-group">
+                                <label for="edit-name" class="input-group-text">預約者</label>
+                                <input type="text" class="form-control" id="edit-name" readonly>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <label for="edit-room" class="input-group-text">會議室</label>
+                                <input type="text" class="form-control" id="edit-room" readonly>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <label for="edit-purpose" class="input-group-text">用途</label>
+                                <input type="text" class="form-control" id="edit-purpose">
+                            </div>
+                            <div class="mb-3 input-group" id='edit-startDatetimepicker' data-td-target-input='nearest'
+                                data-td-target-toggle='nearest'>
+                                <label class="input-group-text" for="start-time">開始時間</label>
+                                <input id='edit-start-time' type='text' class='form-control'
+                                    data-td-target='#edit-startDatetimepicker' />
+                                <span class='input-group-text' data-td-target='#edit-sstartDatetimepicker'
+                                    data-td-toggle='datetimepicker'>
+                                    <i class="bi-calendar" style="font-size: 1rem; color: rgb(0, 0, 0);"></i>
+                                </span>
+                            </div>
+                            <div class="mb-3 input-group" id='edit-endDatetimepicker' data-td-target-input='nearest'
+                                data-td-target-toggle='nearest'>
+                                <label for="end-time" class="input-group-text">結束時間</label>
+                                <input id='edit-end-time' type='text' class='form-control'
+                                    data-td-target='#edit-endDatetimepicker' />
+                                <span class='input-group-text' data-td-target='#edit-endDatetimepicker'
+                                    data-td-toggle='datetimepicker'>
+                                    <i class="bi-calendar" style="font-size: 1rem; color: rgb(0, 0, 0);"></i>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" id="btnDelete" class="btn btn-danger"><i class="bi-trash"
+                                style="font-size: 1rem; color: rgb(255, 255, 255);"></i> 刪除</button>
+                        <button type="button" id="btnUpdate" class="btn btn-primary"><i class="bi-check"
+                                style="font-size: 1rem; color: rgb(255, 255, 255);"></i> 更新</button>
                     </div>
                 </div>
             </div>
