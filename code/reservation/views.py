@@ -24,9 +24,10 @@ def room(request, room_id):
     data = [
         {
             'id': elem.id,
-            'owner_id': elem.owner_id,
-            'name': elem.owner_name,
-            'department': elem.owner_department,
+            'borrower_id': elem.borrower_id,
+            'borrower': elem.borrower,
+            'borrower_department': elem.borrower_department_code,
+            'meeting_name': elem.meeting_name,
             'start': elem.begin_time.isoformat(),
             'end': elem.end_time.isoformat(),
         }
