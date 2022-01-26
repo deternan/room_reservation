@@ -8,6 +8,12 @@ $ python manage.py migrate
 $ python manage.py runserver
 ```
 
+## Update DB schema
+```
+$ python manage.py makemigrations reservation
+$ python manage.py migrate
+```
+
 ## Pre Requirement
 `$ pip install -r requirements.txt`
 
