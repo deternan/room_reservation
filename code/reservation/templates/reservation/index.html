@@ -36,7 +36,8 @@
                 <div class="col list-group">
                     {% for room in room_list %}
                     <a href="{% url 'reservation:room' room.id %}"
-                        class="list-group-item list-group-item-action">{{ room.room_name }}</a>
+                        class="list-group-item list-group-item-action">{{ room.room_department_code}} -
+                        {{ room.room_name }}</a>
                     {% endfor %}
                 </div>
                 {% else %}
