@@ -1,10 +1,10 @@
 ## login
 
-#######Innolux LDAP
+##### Innolux LDAP
 
 ---
 
-`GET` /room_reservation/login
+`POST` /room_reservation/login
  
 
 	{	
@@ -20,8 +20,19 @@ Code: 200
 	{	
 		"id": Int,
   		"user_id": String, 
-  		"user_name" : String
+  		"user_name" : String,
+		"response": String
 	}
+
+sample: 
+
+	{	
+		"id": {uuid},
+  		"user_id": "21011047", 
+  		"user_name" : "王小明",
+		"response": "login success"
+	}
+
 
 Code: 401
 
@@ -30,17 +41,60 @@ Code: 401
 	}
 
 
+## logout
 
-## Room view
+---
+
+`GET` /room_reservation/logout
+ 
+
+
+###### Response
+
+Code: 200
+
+	{	
+		"response": "logout successful"
+	}
+
+
+## Room list
+#### Admin
+`GET` /room_reservation/index
+
+###### Response
+
+	{	
+		"room_list": {
+			room_id:[{
+				"room_name": String,
+				"room_department_code": Int,
+				"room_department": String
+			}]
+		}
+	}
+
+
+sample: 
+
+	{	
+		"room_list": {
+			"0":[{
+				"room_name": "第四會議室",
+				"room_department_code": 1,
+				"room_department": "智能推進處"
+			}]
+		}
+	}
+
+
+
+## Reserved room view
+
 #### Admin
 
-`GET` /room_reservation
+`GET` /room_reservation/{room_id}
 
-	{			
-		"type": "view",
-		"borrower_id": String,
-		"data_type": String
-	}
 
 
 ###### Response
@@ -62,8 +116,6 @@ Code: 200
 		}
 	}
 
-
-sample: (每日為單位)
 
 
 sample: (每週為單位)
@@ -96,11 +148,6 @@ sample: (每週為單位)
 	}
 
 
-sample: (每月為單位)
-
-	{	
-		<TBD>
-	}
 
 Code: 401
 
@@ -112,12 +159,9 @@ Code: 401
 
 #### User
 
-`GET` /room_reservation
+`GET` /room_reservation/{room_id}
 
-	{			
-		"type": "view",
-		"borrower_id": String
-	}
+
 
 ###### Response
 Code: 200
@@ -145,43 +189,99 @@ Code: 401
 	}
 
 
-## Reservation
+## Reservation (add)
 #### Admin
-`GET` /room_reservation/reserved
+`POST` /admin/room_reservation/reservation/add
 
 	{			
-		"type": "reserved",
+		"type": "reservation",
 		"room_id": Int,
-		"room_department_code": Int,
+		"meeting_name": String,
 		"borrower_id": String,
+		"borrower": String,
+		"borrower_department_code": String,
 		"begin_time": DateTime,
-		"eng_time": DateTime		
+		"eng_time": DateTime,
+		"create_time": DateTime,
+		"last_update_time: DateTime,
 	}
 
 ###### Response
 Code: 201
 
 	{	
-		<TBD>
+		"room_id": Int,
+		"response": Boolean
+	}
+
+sample:
+
+	{	
+		"room_id": 1,
+		"response": true
+	}
+
+
+Code: 405
+
+	{	
+		"room_id": Int,
+		"response": Boolean
 	}
 
 
 #### User
-`GET` /room_reservation/reserved
+`POST` /user/room_reservation/reservation/add
 
 	{			
-		"type": "reserved",
+		"type": "reservation",
 		"room_id": Int,
-		"room_department_code": Int,
-		"beginTime": DateTime,
-		"engTime": DateTime,
-		"borrowerId": String		
+		"meeting_name": String,
+		"borrower_id": String,
+		"borrower": String,
+		"borrower_department_code": String,
+		"begin_time": DateTime,
+		"eng_time": DateTime,
+		"create_time": DateTime,
+		"last_update_time: DateTime,	
 	}
 
 
 ###### Response
+Code: 201
+
+	{	
+		"room_id": Int,
+		"response": Boolean
+	}
+
+
+Code: 405
+
+	{	
+		"room_id": Int,
+		"response": Boolean
+	}
+
+
+## Reservation (delete)
+#### Admin
+`POST` /admin/room_reservation/reservation/delete
+
+
+#### User
+`POST` /user/room_reservation/reservation/delete
+
+
+## Reservation (edit)
+#### Admin
+`POST` /admin/room_reservation/reservation/edit
+
+
+#### User
+`POST` /user/room_reservation/reservation/edit
 
 
 
 ---
-Last updated: January 22, 2022 11:30 PM
+Last updated: January 29, 2022 11:40 PM
