@@ -268,20 +268,84 @@ Code: 405
 #### Admin
 `POST` /admin/room_reservation/reservation/delete
 
+	{			
+		"id": Int,
+		"type": "delete",
+		"room_id": Int,
+		"borrower_id": String,
+		"create_time": DateTime,
+		"last_update_time: DateTime	
+	}
+
+
+sample:
+
+	{		
+		"id": 1,	
+		"type": "delete",
+		"room_id": 0,
+		"borrower_id": "21011047",
+		"create_time": DateTime,
+		"last_update_time: DateTime	
+	}
+
 
 #### User
 `POST` /user/room_reservation/reservation/delete
+
+	{			
+		"id": Int,
+		"type": "delete",
+		"room_id": Int,
+		"borrower_id": String,
+		"create_time": DateTime,
+		"last_update_time: DateTime	
+	}
 
 
 ## Reservation (edit)
 #### Admin
 `POST` /admin/room_reservation/reservation/edit
 
+	{			
+		"id": Int,
+		"type": "edit",
+		"room_id": Int,
+		"borrower_id": String,
+		"begin_time": DateTime,
+		"eng_time": DateTime,
+		"create_time": DateTime,
+		"last_update_time: DateTime
+	}
+
+sample:
+
+	{			
+		"id": 1,
+		"type": "edit",
+		"room_id": 0,
+		"borrower_id": String,
+		"begin_time": DateTime,
+		"eng_time": DateTime,
+		"create_time": DateTime,
+		"last_update_time: DateTime
+	}
+
 
 #### User
 `POST` /user/room_reservation/reservation/edit
 
+	{			
+		"id": Int,
+		"type": "edit",
+		"room_id": Int,
+		"borrower_id": "21011047",
+		"begin_time": DateTime,
+		"eng_time": DateTime,
+		"create_time": DateTime,
+		"last_update_time: DateTime
+	}
 
 
 ---
-Last updated: January 29, 2022 11:40 PM
+Last updated: January 31, 2022 00:40 AM
