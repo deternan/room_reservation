@@ -84,7 +84,9 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                        <button type="button" id="btnAdd" class="btn btn-primary">確定</button>
+                        <button type="button" id="btnAdd" class="btn btn-primary"
+                            data-url="{% url 'reservation:add_event' room.id %}"
+                            data-token="{{ csrf_token }}">確定</button>
                     </div>
                 </div>
             </div>

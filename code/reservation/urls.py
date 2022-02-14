@@ -10,4 +10,6 @@ urlpatterns = [
     path('index/', views.index, name='index'),
     # e.g. /reservation/room/1
     path('room/<int:room_id>/', views.room, name='room'),
+    # e.g. /reservation/add_event/1
+    path('add_event/<int:room_id>/', views.add_event, name='add_event'),
 ]

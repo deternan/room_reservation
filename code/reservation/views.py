@@ -1,19 +1,24 @@
+from datetime import datetime
+from venv import create
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import JsonResponse
 
 from .models import Reservation, Room
 
 import json
 
 def login(request):
+    """Login page"""
     return render(request, 'reservation/login.html')
 
 def index(request):
+    """Display room list"""
     room_list = list(Room.objects.order_by('id'))
     context = {'room_list': room_list}
     return render(request, 'reservation/index.html', context)
 
 def room(request, room_id):
+    """Display reservation data of room with room_id"""
     try:
         reservation_list = Reservation.objects.filter(room_id=room_id)
     except Reservation.DoesNotExist:
@@ -28,13 +33,49 @@ def room(request, room_id):
             'borrower': elem.borrower,
             'borrower_department': elem.borrower_department_code,
             'meeting_name': elem.meeting_name,
-            'start': elem.begin_time.isoformat(),
-            'end': elem.end_time.isoformat(),
+            'begin_time': elem.begin_time.isoformat(),
+            'end_time': elem.end_time.isoformat(),
         }
         for elem in reservation_list
     ]
-    print(data)
+
     context['reservation'] = json.dumps(data)
     context['room'] = room_info
 
     return render(request, 'reservation/room.html', context)
+
+def add_event(request, room_id):
+    """Add event data of room reservation
+    """
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if is_ajax:
+        if request.method == 'POST':
+            room = Room.objects.get(pk=room_id)
+            data = json.loads(request.body)
+            new_reservation = Reservation.objects.create(
+                room_id=room,
+                meeting_name=data['meeting_name'],
+                borrower_id=data['borrower_id'],
+                borrower=data['borrower'],
+                borrower_department_code=data['borrower_department_code'],
+                begin_time=data['begin_time'],
+                end_time=data['end_time'],
+            )
+            new_reservation.save()
+            result = {
+                'reservation_id': new_reservation.id,
+                'response': True,
+            }
+            return JsonResponse(result)
+        else:
+            result = {
+                'reservation_id': None,
+                'response': False,
+            }
+            return JsonResponse(result)
+
+    
+    
+
+    

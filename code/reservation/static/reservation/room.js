@@ -1,15 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     var countId = 0;
     var roomName = document.getElementById('roomData').getAttribute('data-json');
-    var reservationList = JSON.parse(document.getElementById('jsonData').getAttribute('data-json'))
+    var reservationList = JSON.parse(document.getElementById('jsonData').getAttribute('data-json'));
     // Convert reservation DB data to json object
-    events = []
+    events = [];
     reservationList.forEach(elem => {
         events.push({
             id: elem['id'],
             title: elem['meeting_name'],
-            start: elem.start,
-            end: elem.end
+            start: elem['begin_time'],
+            end: elem['end_time'],
+            borrower_id: '21011541',
+            borrower: '王曉明',
+            borrower_department_code: 'IDD',
         })
     });
     console.log('events', events);
@@ -241,12 +244,16 @@ document.addEventListener('DOMContentLoaded', function () {
     btnAdd.addEventListener('click', function () {
         console.log(`start: ${toIsoString(startDTP.viewDate)}`);
         console.log(`end: ${toIsoString(endDTP.viewDate)}`);
-        calendar.addEvent({
-            id: countId.toString(),
-            title: document.getElementById('purpose').value,
-            start: toIsoString(startDTP.viewDate),
-            end: toIsoString(endDTP.viewDate),
-        });
+        var eventObj = {
+            meeting_name: document.getElementById('purpose').value,
+            begin_time: toIsoString(startDTP.viewDate),
+            end_time: toIsoString(endDTP.viewDate),
+            borrower_id: '21011541',
+            borrower: '王曉明',
+            borrower_department_code: 'IDD',
+        };
+        // ajax
+        AddCalendarEvent(calendar, eventObj);
         countId++;
         eventModal.hide();
     });
@@ -269,6 +276,38 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     calendar.render();
 });
+
+function AddCalendarEvent(calendar, eventObj) {
+    var APIUrl = document.getElementById('btnAdd').getAttribute('data-url');
+    var csrfToken = document.getElementById('btnAdd').getAttribute('data-token');
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var result = JSON.parse(this.responseText);
+            if (result['response']) {
+                var reservation_event = {
+                    id: result['reservation_id'],
+                    title: eventObj.meeting_name,
+                    start: eventObj.begin_time,
+                    end: eventObj.end_time,
+                    borrower_id: eventObj.borrower_id,
+                    borrower: eventObj.borrower,
+                    borrower_department_code: eventObj.borrower_department_code,
+                }
+                calendar.addEvent(reservation_event);
+            } else {
+                alert('新增失敗 [錯誤的格式]')
+            }
+
+        }
+    };
+    console.log(JSON.stringify(eventObj));
+    xhr.open("POST", APIUrl, true);
+    xhr.setRequestHeader("X-CSRFTOKEN", csrfToken);
+    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify(eventObj));
+}
 
 function toIsoString(date) {
     var tzo = -date.getTimezoneOffset(),
