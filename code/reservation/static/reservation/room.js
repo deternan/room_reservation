@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    var countId = 0;
     var roomName = document.getElementById('roomData').getAttribute('data-json');
     var reservationList = JSON.parse(document.getElementById('jsonData').getAttribute('data-json'));
     // Convert reservation DB data to json object
@@ -252,7 +251,6 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         // ajax
         AddCalendarEvent(calendar, eventObj);
-        countId++;
         eventModal.hide();
     });
     // Update event
@@ -276,8 +274,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var btnDelete = document.getElementById('btnDelete');
     btnDelete.addEventListener('click', function () {
         var eventId = document.getElementById('eventId').value;
-        var eventObj = calendar.getEventById(eventId);
-        eventObj.remove();
+
+        var eventObj = {
+            id: parseInt(eventId),
+        };
+        DeleteCalendarEvent(calendar, eventObj);
+
         editModal.hide();
     });
     calendar.render();
@@ -307,7 +309,7 @@ function AddCalendarEvent(calendar, eventObj) {
 
         }
     };
-    console.log(JSON.stringify(eventObj));
+
     xhr.open("POST", APIUrl, true);
     xhr.setRequestHeader("X-CSRFTOKEN", csrfToken);
     xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -331,7 +333,30 @@ function UpdateCalendarEvent(calendar, eventObj) {
             }
         }
     };
-    console.log(JSON.stringify(eventObj));
+
+    xhr.open("POST", APIUrl, true);
+    xhr.setRequestHeader("X-CSRFTOKEN", csrfToken);
+    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify(eventObj));
+}
+
+function DeleteCalendarEvent(calendar, eventObj) {
+    var APIUrl = document.getElementById('btnDelete').getAttribute('data-url');
+    var csrfToken = document.getElementById('btnDelete').getAttribute('data-token');
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var result = JSON.parse(this.responseText);
+            if (result['response']) {
+                var event = calendar.getEventById(eventObj.id);
+                event.remove();
+            } else {
+                alert('刪除失敗 [錯誤的格式]')
+            }
+        }
+    };
+
     xhr.open("POST", APIUrl, true);
     xhr.setRequestHeader("X-CSRFTOKEN", csrfToken);
     xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");

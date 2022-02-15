@@ -12,6 +12,8 @@ urlpatterns = [
     path('room/<int:room_id>/', views.room, name='room'),
     # e.g. /reservation/add_event/1
     path('add_event/<int:room_id>/', views.add_event, name='add_event'),
-    # e.g. /reservation/update_event/1
-    path('update_event/<int:room_id>/', views.update_event, name='update_event'),
+    # e.g. /reservation/update_event/
+    path('update_event/', views.update_event, name='update_event'),
+    # e.g. /reservation/delete_event
+    path('delete_event/', views.delete_event, name='delete_event'),
 ]

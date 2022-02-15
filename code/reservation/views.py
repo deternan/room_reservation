@@ -75,14 +75,13 @@ def add_event(request, room_id):
             }
             return JsonResponse(result)
 
-def update_event(request, room_id):
+def update_event(request):
     """Update event data of room reservation (API)
     """
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
     if is_ajax:
         if request.method == 'POST':
-            room = Room.objects.get(pk=room_id)
             data = json.loads(request.body)
             reservation_id = data['id']
             reservation = Reservation.objects.get(pk=reservation_id)
@@ -90,18 +89,36 @@ def update_event(request, room_id):
             reservation.begin_time = data['begin_time']
             reservation.end_time = data['end_time']
             reservation.save()
-            
+
             result = {
-                'reservation_id': reservation.id,
                 'response': True,
             }
             return JsonResponse(result)
         else:
             result = {
-                'reservation_id': None,
                 'response': False,
             }
             return JsonResponse(result)
     
+def delete_event(request):
+    """Delete event data of room reservation (API)
+    """
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
+    if is_ajax:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            reservation_id = data['id']
+            reservation = Reservation.objects.get(pk=reservation_id)
+            reservation.delete()
+            
+            result = {
+                'response': True,
+            }
+            return JsonResponse(result)
+        else:
+            result = {
+                'response': False,
+            }
+            return JsonResponse(result)
     
