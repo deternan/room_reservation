@@ -127,13 +127,13 @@ document.addEventListener('DOMContentLoaded', function () {
         firstDay: 1,
         events: events,
         eventClick: function (info) {
-            var eventObj = info.event;
-            document.getElementById('eventId').value = eventObj.id;
-            document.getElementById('edit-name').value = 'IDD - 王曉明(21011234)';
+            var event = info.event;
+            document.getElementById('eventId').value = event.id;
+            document.getElementById('edit-name').value = `${event.borrower_department_code} - ${event.borrower}(${event.borrower_id})`;
             document.getElementById('edit-room').value = roomName;
-            document.getElementById('edit-purpose').value = eventObj.title;
-            var startTime = new Date(eventObj.startStr);
-            var endTime = new Date(eventObj.endStr);
+            document.getElementById('edit-purpose').value = event.title;
+            var startTime = new Date(event.startStr);
+            var endTime = new Date(event.endStr);
             editStartDTP.updateOptions({
                 viewDate: startTime,
                 display: {
@@ -242,8 +242,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add event
     var btnAdd = document.getElementById('btnAdd');
     btnAdd.addEventListener('click', function () {
-        console.log(`start: ${toIsoString(startDTP.viewDate)}`);
-        console.log(`end: ${toIsoString(endDTP.viewDate)}`);
         var eventObj = {
             meeting_name: document.getElementById('purpose').value,
             begin_time: toIsoString(startDTP.viewDate),
@@ -261,9 +259,17 @@ document.addEventListener('DOMContentLoaded', function () {
     var btnUpdate = document.getElementById('btnUpdate');
     btnUpdate.addEventListener('click', function () {
         var eventId = document.getElementById('eventId').value;
-        var eventObj = calendar.getEventById(eventId);
-        eventObj.setProp('title', document.getElementById('purpose').value);
-        eventObj.setDates(toIsoString(editStartDTP.viewDate), toIsoString(editEndDTP.viewDate));
+        var event = calendar.getEventById(eventId);
+        var eventObj = {
+            id: parseInt(eventId),
+            meeting_name: document.getElementById('edit-purpose').value,
+            begin_time: toIsoString(editStartDTP.viewDate),
+            end_time: toIsoString(editEndDTP.viewDate),
+            borrower_id: event.borrower_id,
+            borrower: event.borrower,
+            borrower_department_code: event.borrower_department_code,
+        };
+        UpdateCalendarEvent(calendar, eventObj);
         editModal.hide();
     });
     // Delete event
@@ -299,6 +305,30 @@ function AddCalendarEvent(calendar, eventObj) {
                 alert('新增失敗 [錯誤的格式]')
             }
 
+        }
+    };
+    console.log(JSON.stringify(eventObj));
+    xhr.open("POST", APIUrl, true);
+    xhr.setRequestHeader("X-CSRFTOKEN", csrfToken);
+    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify(eventObj));
+}
+
+function UpdateCalendarEvent(calendar, eventObj) {
+    var APIUrl = document.getElementById('btnUpdate').getAttribute('data-url');
+    var csrfToken = document.getElementById('btnUpdate').getAttribute('data-token');
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var result = JSON.parse(this.responseText);
+            if (result['response']) {
+                var event = calendar.getEventById(eventObj.id);
+                event.setProp('title', eventObj.meeting_name);
+                event.setDates(eventObj.begin_time, eventObj.end_time);
+            } else {
+                alert('更新失敗 [錯誤的格式]')
+            }
         }
     };
     console.log(JSON.stringify(eventObj));

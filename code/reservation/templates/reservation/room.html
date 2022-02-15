@@ -140,8 +140,9 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
                         <button type="button" id="btnDelete" class="btn btn-danger"><i class="bi-trash"
                                 style="font-size: 1rem; color: rgb(255, 255, 255);"></i> 刪除</button>
-                        <button type="button" id="btnUpdate" class="btn btn-primary"><i class="bi-check"
-                                style="font-size: 1rem; color: rgb(255, 255, 255);"></i> 更新</button>
+                        <button type="button" id="btnUpdate" class="btn btn-primary"
+                            data-url="{% url 'reservation:update_event' room.id %}" data-token="{{ csrf_token }}"><i
+                                class=" bi-check" style="font-size: 1rem; color: rgb(255, 255, 255);"></i> 更新</button>
                     </div>
                 </div>
             </div>
