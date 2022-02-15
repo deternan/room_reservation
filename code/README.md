@@ -32,4 +32,7 @@ $ python manage.py migrate
 
 ## Build backend admin user
 `$ python manage.py createsuperuser`
-> If you want to enter the admin page, open the link http://127.0.0.1:8000/admin
+> Open the link http://127.0.0.1:8000/admin to enter admin page.
+> <br/>If you forget your password, you can enter the command below to reset it.
+
+```$ python manage.py changepassword <user_name>```
