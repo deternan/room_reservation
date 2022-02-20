@@ -1,15 +1,45 @@
+from urllib import response
+import requests
 from datetime import datetime
 from venv import create
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
+from django.urls import reverse
 
 from .models import Reservation, Room
 
 import json
 
 def login(request):
-    """Login page"""
-    return render(request, 'reservation/login.html')
+    """Login page
+        (GET) - Display login page
+        (POST) - User login from login form (API)
+    """
+    if request.method == 'POST':
+        data = {
+            'UserID': request.POST['userID'],
+            'password': request.POST['password'],
+            # 'remember': request.POST.get('remember') is not None
+        }
+        request.session['user_id'] = data['UserID']
+        request.session['passwd'] = data['password']
+
+        # login_api = 'http://inlcnws/InxSSOAuth/api/Auth/CheckAD'
+        # response = requests.post(login_api, json=data)
+        # json_response = json.loads(response.text)
+
+        if True:
+            # request.session['user_id'] = json_response['user_id']
+            # request.session['user_name'] = json_response['user_name']
+            # request.session['response'] = json_response['response']
+            return HttpResponseRedirect(reverse('reservation:index'))
+        else:
+            # [TODO]: login failed process
+            msg = '登入失敗'
+            return render(request, 'reservation/login.html', locals())
+    else:
+        request.session['msg'] = '未登入'
+        return render(request, 'reservation/login.html', locals())
 
 def index(request):
     """Display room list"""
@@ -121,4 +151,3 @@ def delete_event(request):
                 'response': False,
             }
             return JsonResponse(result)
-    

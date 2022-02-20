@@ -70,6 +70,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'room_reservation.wsgi.application'
 
+# Session settings
+SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+# time unit: seconds
+SESSION_COOKIE_AGE = 600
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
