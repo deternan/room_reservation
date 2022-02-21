@@ -30,9 +30,9 @@
                 </div>
                 <div class="d-flex">
                     <span class="navbar-text me-2">
-                        {{ request.session.user_id }}
+                        {{ request.session.user_name }}({{ request.session.user_id }})
                     </span>
-                    <a class="btn btn-warning" href="{% url 'reservation:login' %}">Logout</a>
+                    <a class="btn btn-warning" href="{% url 'reservation:logout' %}">Logout</a>
                 </div>
             </div>
         </nav>
@@ -41,9 +41,9 @@
                 {% if room_list %}
                 <div class="col list-group">
                     {% for room in room_list %}
-                    <a href="{% url 'reservation:room' room.id %}"
-                        class="list-group-item list-group-item-action">{{ room.room_department_code}} -
-                        {{ room.room_name }}</a>
+                    <a href="{% url 'reservation:room' room.id %}" class="list-group-item list-group-item-action">
+                        {{room.room_department_code}} - {{ room.room_name }}
+                    </a>
                     {% endfor %}
                 </div>
                 {% else %}

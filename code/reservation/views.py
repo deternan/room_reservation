@@ -10,6 +10,7 @@ from .models import Reservation, Room
 
 import json
 
+
 def login(request):
     """Login page
         (GET) - Display login page
@@ -24,28 +25,41 @@ def login(request):
         request.session['user_id'] = data['UserID']
         request.session['passwd'] = data['password']
 
-        # login_api = 'http://inlcnws/InxSSOAuth/api/Auth/CheckAD'
-        # response = requests.post(login_api, json=data)
-        # json_response = json.loads(response.text)
+        login_api = 'http://inlcnws/InxSSOAuth/api/Auth/CheckAD'
+        response = requests.post(login_api, json=data)
+        json_response = json.loads(response.text)
+        print(json_response)
 
-        if True:
-            # request.session['user_id'] = json_response['user_id']
-            # request.session['user_name'] = json_response['user_name']
-            # request.session['response'] = json_response['response']
+        if json_response['errMsg'] == '':
+            user_properties = json.loads(json_response['Properties'])
+            print(user_properties)
+            request.session['user_id'] = user_properties['employeeid'][0]
+            display_name = user_properties['displayname'][0]
+            request.session['user_name'] = display_name.split(' ')[-1]
             return HttpResponseRedirect(reverse('reservation:index'))
         else:
-            # [TODO]: login failed process
             msg = '登入失敗'
             return render(request, 'reservation/login.html', locals())
     else:
-        request.session['msg'] = '未登入'
-        return render(request, 'reservation/login.html', locals())
+        if 'user_id' in request.session:
+            return HttpResponseRedirect(reverse('reservation:index'))
+        else:
+            return render(request, 'reservation/login.html', locals())
+
+
+def logout(request):
+    """Logout (API)"""
+    del request.session['user_id']
+    del request.session['user_name']
+    return HttpResponseRedirect(reverse('reservation:login'))
+
 
 def index(request):
     """Display room list"""
     room_list = list(Room.objects.order_by('id'))
     context = {'room_list': room_list}
     return render(request, 'reservation/index.html', context)
+
 
 def room(request, room_id):
     """Display reservation data of room with room_id"""
@@ -56,23 +70,21 @@ def room(request, room_id):
     print(reservation_list)
     room_info = Room.objects.get(pk=room_id)
     context = dict()
-    data = [
-        {
-            'id': elem.id,
-            'borrower_id': elem.borrower_id,
-            'borrower': elem.borrower,
-            'borrower_department': elem.borrower_department_code,
-            'meeting_name': elem.meeting_name,
-            'begin_time': elem.begin_time.isoformat(),
-            'end_time': elem.end_time.isoformat(),
-        }
-        for elem in reservation_list
-    ]
+    data = [{
+        'id': elem.id,
+        'borrower_id': elem.borrower_id,
+        'borrower': elem.borrower,
+        'borrower_department': elem.borrower_department_code,
+        'meeting_name': elem.meeting_name,
+        'begin_time': elem.begin_time.isoformat(),
+        'end_time': elem.end_time.isoformat(),
+    } for elem in reservation_list]
 
     context['reservation'] = json.dumps(data)
     context['room'] = room_info
 
     return render(request, 'reservation/room.html', context)
+
 
 def add_event(request, room_id):
     """Add event data of room reservation (API)
@@ -105,6 +117,7 @@ def add_event(request, room_id):
             }
             return JsonResponse(result)
 
+
 def update_event(request):
     """Update event data of room reservation (API)
     """
@@ -129,7 +142,8 @@ def update_event(request):
                 'response': False,
             }
             return JsonResponse(result)
-    
+
+
 def delete_event(request):
     """Delete event data of room reservation (API)
     """
@@ -141,7 +155,7 @@ def delete_event(request):
             reservation_id = data['id']
             reservation = Reservation.objects.get(pk=reservation_id)
             reservation.delete()
-            
+
             result = {
                 'response': True,
             }
