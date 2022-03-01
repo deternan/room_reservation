@@ -36,6 +36,7 @@ def login(request):
             request.session['user_id'] = user_properties['employeeid'][0]
             display_name = user_properties['displayname'][0]
             request.session['user_name'] = display_name.split(' ')[-1]
+            request.session['user_dept'] = user_properties['department'][0]
 
             try:
                 _ = Admin.objects.get(user_id=request.session['user_id'])
@@ -59,6 +60,7 @@ def logout(request):
     del request.session['user_id']
     del request.session['user_name']
     del request.session['is_admin']
+    del request.session['user_dept']
     return HttpResponseRedirect(reverse('reservation:login'))
 
 

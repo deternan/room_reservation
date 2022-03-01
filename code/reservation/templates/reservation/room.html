@@ -36,6 +36,9 @@
             <dev class="col">
                 <div id="calendar"></div>
                 <div style="display: none" id="jsonData" data-json="{{ reservation }}"></div>
+                <div style="display: none" id="user_id" data-json="{{ request.session.user_id }}"></div>
+                <div style="display: none" id="user_name" data-json="{{ request.session.user_name }}"></div>
+                <div style="display: none" id="user_dept" data-json="{{ request.session.user_dept }}"></div>
             </dev>
         </div>
         <div class="modal fade" id="eventModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"

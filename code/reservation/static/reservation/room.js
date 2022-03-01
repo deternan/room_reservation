@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     var roomName = document.getElementById('roomData').getAttribute('data-json');
     var reservationList = JSON.parse(document.getElementById('jsonData').getAttribute('data-json'));
+    var user_id = document.getElementById('user_id').getAttribute('data-json')
+    var user_name = document.getElementById('user_name').getAttribute('data-json')
+    var user_dept = document.getElementById('user_dept').getAttribute('data-json')
     // Convert reservation DB data to json object
     events = [];
     reservationList.forEach(elem => {
@@ -9,8 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
             title: elem['meeting_name'],
             start: elem['begin_time'],
             end: elem['end_time'],
-            borrower_id: '21011541',
-            borrower: '王曉明',
+            borrower_id: elem['borrower_id'],
+            borrower: elem['borrower'],
             borrower_department_code: 'IDD',
         })
     });
@@ -185,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
             endTime: '22:00',
         },
         select: function (info) {
-            document.getElementById('name').value = 'IDD - 王曉明(21011234)';
+            document.getElementById('name').value = `${user_dept} - ${user_name}(${user_id})`;
             document.getElementById('room').value = roomName;
             document.getElementById('purpose').value = '';
             var startTime = new Date(info.startStr);
@@ -245,9 +248,9 @@ document.addEventListener('DOMContentLoaded', function () {
             meeting_name: document.getElementById('purpose').value,
             begin_time: toIsoString(startDTP.viewDate),
             end_time: toIsoString(endDTP.viewDate),
-            borrower_id: '21011541',
-            borrower: '王曉明',
-            borrower_department_code: 'IDD',
+            borrower_id: user_id,
+            borrower: user_name,
+            borrower_department_code: user_dept,
         };
         // ajax
         AddCalendarEvent(calendar, eventObj);
