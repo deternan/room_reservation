@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 
-from .models import Reservation, Room
+from .models import Reservation, Room, Admin
 
 import json
 
@@ -36,6 +36,13 @@ def login(request):
             request.session['user_id'] = user_properties['employeeid'][0]
             display_name = user_properties['displayname'][0]
             request.session['user_name'] = display_name.split(' ')[-1]
+
+            try:
+                _ = Admin.objects.get(user_id=request.session['user_id'])
+                request.session['is_admin'] = True
+            except Admin.DoesNotExist:
+                request.session['is_admin'] = False
+
             return HttpResponseRedirect(reverse('reservation:index'))
         else:
             msg = '登入失敗'
@@ -51,6 +58,7 @@ def logout(request):
     """Logout (API)"""
     del request.session['user_id']
     del request.session['user_name']
+    del request.session['is_admin']
     return HttpResponseRedirect(reverse('reservation:login'))
 
 
@@ -64,9 +72,15 @@ def index(request):
 def room(request, room_id):
     """Display reservation data of room with room_id"""
     try:
-        reservation_list = Reservation.objects.filter(room_id=room_id)
+        print(type(request.session['is_admin']), request.session['is_admin'])
+        if request.session['is_admin']:
+            reservation_list = Reservation.objects.filter(room_id=room_id)
+        else:
+            reservation_list = Reservation.objects.filter(
+                room_id=room_id, borrower_id=request.session['user_id'])
     except Reservation.DoesNotExist:
         reservation_list = []
+
     print(reservation_list)
     room_info = Room.objects.get(pk=room_id)
     context = dict()
