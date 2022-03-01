@@ -1,9 +1,12 @@
+var user_id = document.getElementById('user_id').getAttribute('data-json')
+var user_name = document.getElementById('user_name').getAttribute('data-json')
+var user_dept = document.getElementById('user_dept').getAttribute('data-json')
+
 document.addEventListener('DOMContentLoaded', function () {
     var roomName = document.getElementById('roomData').getAttribute('data-json');
     var reservationList = JSON.parse(document.getElementById('jsonData').getAttribute('data-json'));
-    var user_id = document.getElementById('user_id').getAttribute('data-json')
-    var user_name = document.getElementById('user_name').getAttribute('data-json')
-    var user_dept = document.getElementById('user_dept').getAttribute('data-json')
+
+    console.log(`${user_dept} - ${user_name}(${user_id})`);
     // Convert reservation DB data to json object
     events = [];
     reservationList.forEach(elem => {
@@ -14,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
             end: elem['end_time'],
             borrower_id: elem['borrower_id'],
             borrower: elem['borrower'],
-            borrower_department_code: 'IDD',
+            borrower_department_code: elem['borrower_department'],
         })
     });
     console.log('events', events);
@@ -130,8 +133,10 @@ document.addEventListener('DOMContentLoaded', function () {
         events: events,
         eventClick: function (info) {
             var event = info.event;
+            var name = `${event.extendedProps.borrower_department_code} - ${event.extendedProps.borrower}(${event.extendedProps.borrower_id})`;
+            console.log(event.extendedProps.borrower_department_code)
             document.getElementById('eventId').value = event.id;
-            document.getElementById('edit-name').value = `${event.borrower_department_code} - ${event.borrower}(${event.borrower_id})`;
+            document.getElementById('edit-name').value = name;
             document.getElementById('edit-room').value = roomName;
             document.getElementById('edit-purpose').value = event.title;
             var startTime = new Date(event.startStr);
@@ -266,10 +271,11 @@ document.addEventListener('DOMContentLoaded', function () {
             meeting_name: document.getElementById('edit-purpose').value,
             begin_time: toIsoString(editStartDTP.viewDate),
             end_time: toIsoString(editEndDTP.viewDate),
-            borrower_id: event.borrower_id,
-            borrower: event.borrower,
-            borrower_department_code: event.borrower_department_code,
+            borrower_id: event.extendedProps.borrower_id,
+            borrower: event.extendedProps.borrower,
+            borrower_department_code: event.extendedProps.borrower_department_code,
         };
+        console.log('GG', eventObj);
         UpdateCalendarEvent(calendar, eventObj);
         editModal.hide();
     });
@@ -292,6 +298,7 @@ function AddCalendarEvent(calendar, eventObj) {
     var APIUrl = document.getElementById('btnAdd').getAttribute('data-url');
     var csrfToken = document.getElementById('btnAdd').getAttribute('data-token');
     var xhr = new XMLHttpRequest();
+
     xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             var result = JSON.parse(this.responseText);
@@ -324,6 +331,7 @@ function UpdateCalendarEvent(calendar, eventObj) {
     var APIUrl = document.getElementById('btnUpdate').getAttribute('data-url');
     var csrfToken = document.getElementById('btnUpdate').getAttribute('data-token');
     var xhr = new XMLHttpRequest();
+    console.log(eventObj);
     xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             var result = JSON.parse(this.responseText);
