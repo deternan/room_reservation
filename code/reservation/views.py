@@ -57,7 +57,7 @@ def login(request):
 
 def logout(request):
     """Logout (API)"""
-    for key in request.session.keys():
+    for key in list(request.session.keys()):
         del request.session[key]
 
     return HttpResponseRedirect(reverse('reservation:login'))
