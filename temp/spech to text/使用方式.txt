@@ -1,0 +1,19 @@
+語音辨識程式 Demo
+
+1. 建立好新的開發環境
+2. 拉取程式碼 http://10.55.52.196:3000/hsiaochien.tsai/azure_speech
+3. 參考 requirements.txt 安裝相關依賴
+4. 修改 config.py
+5. config.py
+
+   device_uuid ="" #讀取預設麥克風
+   speech_key, speech_service_region = "05146b7d67c84c74b00195047a08edb1", "eastasia"
+   trans_key, trans_service_region = "d8792ea115474fd28c2d1193089c6abc", "eastasia"
+       
+
+6. 執行  captioner.py
+
+   會出現一個黑色視窗
+
+7. 使用麥克風說話，看黑色視窗是否會看得到你說的話
+8. 將 captioner.py 包裝成 exe 讓處長可執行
